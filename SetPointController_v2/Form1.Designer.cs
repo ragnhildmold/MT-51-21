@@ -30,17 +30,20 @@ namespace SetPointController_v2
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.PowerButton = new System.Windows.Forms.CheckBox();
             this.Current = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.time = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.timer = new System.Windows.Forms.Timer(this.components);
-            this.status = new System.Windows.Forms.Label();
+            this.status_convmodel = new System.Windows.Forms.Label();
             this.ConverterModel = new System.Windows.Forms.CheckBox();
             this.Converter = new System.Windows.Forms.CheckBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.Broker = new System.Windows.Forms.TextBox();
+            this.File = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.DisplayTemperatureModel = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -67,6 +70,10 @@ namespace SetPointController_v2
             this.label17 = new System.Windows.Forms.Label();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.Clock = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.status_converter = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
             // PowerButton
@@ -120,14 +127,14 @@ namespace SetPointController_v2
             // 
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
-            // status
+            // status_convmodel
             // 
-            this.status.AutoSize = true;
-            this.status.Location = new System.Drawing.Point(206, 342);
-            this.status.Name = "status";
-            this.status.Size = new System.Drawing.Size(90, 13);
-            this.status.TabIndex = 6;
-            this.status.Text = "Status: Power Off";
+            this.status_convmodel.AutoSize = true;
+            this.status_convmodel.Location = new System.Drawing.Point(274, 283);
+            this.status_convmodel.Name = "status_convmodel";
+            this.status_convmodel.Size = new System.Drawing.Size(90, 13);
+            this.status_convmodel.TabIndex = 6;
+            this.status_convmodel.Text = "Status: Power Off";
             // 
             // ConverterModel
             // 
@@ -153,25 +160,25 @@ namespace SetPointController_v2
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // Broker
+            // File
             // 
-            this.Broker.Location = new System.Drawing.Point(130, 168);
-            this.Broker.Name = "Broker";
-            this.Broker.Size = new System.Drawing.Size(100, 20);
-            this.Broker.TabIndex = 9;
+            this.File.Location = new System.Drawing.Point(130, 168);
+            this.File.Name = "File";
+            this.File.Size = new System.Drawing.Size(100, 20);
+            this.File.TabIndex = 9;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(37, 171);
+            this.label3.Location = new System.Drawing.Point(52, 171);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(79, 13);
+            this.label3.Size = new System.Drawing.Size(66, 13);
             this.label3.TabIndex = 10;
-            this.label3.Text = "Broker Address";
+            this.label3.Text = "Name of File";
             // 
             // DisplayTemperatureModel
             // 
-            this.DisplayTemperatureModel.Location = new System.Drawing.Point(445, 104);
+            this.DisplayTemperatureModel.Location = new System.Drawing.Point(442, 84);
             this.DisplayTemperatureModel.Name = "DisplayTemperatureModel";
             this.DisplayTemperatureModel.ReadOnly = true;
             this.DisplayTemperatureModel.Size = new System.Drawing.Size(100, 20);
@@ -180,7 +187,7 @@ namespace SetPointController_v2
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(372, 107);
+            this.label4.Location = new System.Drawing.Point(369, 87);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(67, 13);
             this.label4.TabIndex = 12;
@@ -188,7 +195,7 @@ namespace SetPointController_v2
             // 
             // DisplayFrequencyModel
             // 
-            this.DisplayFrequencyModel.Location = new System.Drawing.Point(479, 222);
+            this.DisplayFrequencyModel.Location = new System.Drawing.Point(490, 482);
             this.DisplayFrequencyModel.Name = "DisplayFrequencyModel";
             this.DisplayFrequencyModel.ReadOnly = true;
             this.DisplayFrequencyModel.Size = new System.Drawing.Size(100, 20);
@@ -196,7 +203,7 @@ namespace SetPointController_v2
             // 
             // DisplayCurrentModel
             // 
-            this.DisplayCurrentModel.Location = new System.Drawing.Point(479, 262);
+            this.DisplayCurrentModel.Location = new System.Drawing.Point(490, 522);
             this.DisplayCurrentModel.Name = "DisplayCurrentModel";
             this.DisplayCurrentModel.ReadOnly = true;
             this.DisplayCurrentModel.Size = new System.Drawing.Size(100, 20);
@@ -204,7 +211,7 @@ namespace SetPointController_v2
             // 
             // DisplayPowerModel
             // 
-            this.DisplayPowerModel.Location = new System.Drawing.Point(479, 301);
+            this.DisplayPowerModel.Location = new System.Drawing.Point(490, 561);
             this.DisplayPowerModel.Name = "DisplayPowerModel";
             this.DisplayPowerModel.ReadOnly = true;
             this.DisplayPowerModel.Size = new System.Drawing.Size(100, 20);
@@ -213,7 +220,7 @@ namespace SetPointController_v2
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(416, 225);
+            this.label5.Location = new System.Drawing.Point(427, 485);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(57, 13);
             this.label5.TabIndex = 16;
@@ -222,7 +229,7 @@ namespace SetPointController_v2
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(432, 265);
+            this.label6.Location = new System.Drawing.Point(443, 525);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(41, 13);
             this.label6.TabIndex = 17;
@@ -231,7 +238,7 @@ namespace SetPointController_v2
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(432, 304);
+            this.label7.Location = new System.Drawing.Point(443, 564);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(37, 13);
             this.label7.TabIndex = 18;
@@ -239,7 +246,7 @@ namespace SetPointController_v2
             // 
             // DisplayFrequency
             // 
-            this.DisplayFrequency.Location = new System.Drawing.Point(656, 222);
+            this.DisplayFrequency.Location = new System.Drawing.Point(667, 482);
             this.DisplayFrequency.Name = "DisplayFrequency";
             this.DisplayFrequency.ReadOnly = true;
             this.DisplayFrequency.Size = new System.Drawing.Size(100, 20);
@@ -247,7 +254,7 @@ namespace SetPointController_v2
             // 
             // DisplayTemperature
             // 
-            this.DisplayTemperature.Location = new System.Drawing.Point(644, 104);
+            this.DisplayTemperature.Location = new System.Drawing.Point(641, 84);
             this.DisplayTemperature.Name = "DisplayTemperature";
             this.DisplayTemperature.ReadOnly = true;
             this.DisplayTemperature.Size = new System.Drawing.Size(100, 20);
@@ -255,7 +262,7 @@ namespace SetPointController_v2
             // 
             // DisplayCurrent
             // 
-            this.DisplayCurrent.Location = new System.Drawing.Point(656, 262);
+            this.DisplayCurrent.Location = new System.Drawing.Point(667, 522);
             this.DisplayCurrent.Name = "DisplayCurrent";
             this.DisplayCurrent.ReadOnly = true;
             this.DisplayCurrent.Size = new System.Drawing.Size(100, 20);
@@ -263,7 +270,7 @@ namespace SetPointController_v2
             // 
             // DisplayPower
             // 
-            this.DisplayPower.Location = new System.Drawing.Point(656, 303);
+            this.DisplayPower.Location = new System.Drawing.Point(667, 563);
             this.DisplayPower.Name = "DisplayPower";
             this.DisplayPower.ReadOnly = true;
             this.DisplayPower.Size = new System.Drawing.Size(100, 20);
@@ -311,7 +318,7 @@ namespace SetPointController_v2
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(585, 265);
+            this.label11.Location = new System.Drawing.Point(596, 525);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(20, 13);
             this.label11.TabIndex = 27;
@@ -320,7 +327,7 @@ namespace SetPointController_v2
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(764, 265);
+            this.label12.Location = new System.Drawing.Point(775, 525);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(20, 13);
             this.label12.TabIndex = 28;
@@ -338,7 +345,7 @@ namespace SetPointController_v2
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(585, 225);
+            this.label14.Location = new System.Drawing.Point(596, 485);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(26, 13);
             this.label14.TabIndex = 30;
@@ -347,7 +354,7 @@ namespace SetPointController_v2
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(764, 225);
+            this.label15.Location = new System.Drawing.Point(775, 485);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(26, 13);
             this.label15.TabIndex = 31;
@@ -356,7 +363,7 @@ namespace SetPointController_v2
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(585, 306);
+            this.label16.Location = new System.Drawing.Point(596, 566);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(24, 13);
             this.label16.TabIndex = 32;
@@ -365,7 +372,7 @@ namespace SetPointController_v2
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(764, 304);
+            this.label17.Location = new System.Drawing.Point(775, 564);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(24, 13);
             this.label17.TabIndex = 33;
@@ -374,18 +381,55 @@ namespace SetPointController_v2
             // Clock
             // 
             this.Clock.AutoSize = true;
-            this.Clock.Location = new System.Drawing.Point(16, 375);
+            this.Clock.Location = new System.Drawing.Point(37, 403);
             this.Clock.Name = "Clock";
             this.Clock.Size = new System.Drawing.Size(34, 13);
             this.Clock.TabIndex = 35;
             this.Clock.Text = "Clock";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(37, 379);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(33, 13);
+            this.label18.TabIndex = 36;
+            this.label18.Text = "Time:";
+            // 
+            // chart1
+            // 
+            chartArea2.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chart1.Legends.Add(legend2);
+            this.chart1.Location = new System.Drawing.Point(467, 168);
+            this.chart1.Name = "chart1";
+            series2.ChartArea = "ChartArea1";
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            this.chart1.Series.Add(series2);
+            this.chart1.Size = new System.Drawing.Size(300, 300);
+            this.chart1.TabIndex = 37;
+            this.chart1.Text = "chart1";
+            // 
+            // status_converter
+            // 
+            this.status_converter.AutoSize = true;
+            this.status_converter.Location = new System.Drawing.Point(274, 306);
+            this.status_converter.Name = "status_converter";
+            this.status_converter.Size = new System.Drawing.Size(90, 13);
+            this.status_converter.TabIndex = 38;
+            this.status_converter.Text = "Status: Power Off";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.ClientSize = new System.Drawing.Size(851, 468);
+            this.ClientSize = new System.Drawing.Size(821, 612);
+            this.Controls.Add(this.status_converter);
+            this.Controls.Add(this.chart1);
+            this.Controls.Add(this.label18);
             this.Controls.Add(this.Clock);
             this.Controls.Add(this.label17);
             this.Controls.Add(this.label16);
@@ -411,10 +455,10 @@ namespace SetPointController_v2
             this.Controls.Add(this.label4);
             this.Controls.Add(this.DisplayTemperatureModel);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.Broker);
+            this.Controls.Add(this.File);
             this.Controls.Add(this.Converter);
             this.Controls.Add(this.ConverterModel);
-            this.Controls.Add(this.status);
+            this.Controls.Add(this.status_convmodel);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.time);
             this.Controls.Add(this.label1);
@@ -422,6 +466,7 @@ namespace SetPointController_v2
             this.Controls.Add(this.PowerButton);
             this.Name = "Form1";
             this.Text = "Form1";
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -435,11 +480,11 @@ namespace SetPointController_v2
         private System.Windows.Forms.TextBox time;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Timer timer;
-        private System.Windows.Forms.Label status;
+        private System.Windows.Forms.Label status_convmodel;
         private System.Windows.Forms.CheckBox ConverterModel;
         private System.Windows.Forms.CheckBox Converter;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.TextBox Broker;
+        private System.Windows.Forms.TextBox File;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox DisplayTemperatureModel;
         private System.Windows.Forms.Label label4;
@@ -466,6 +511,9 @@ namespace SetPointController_v2
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.Label Clock;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.Label status_converter;
     }
 }
 

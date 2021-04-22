@@ -25,6 +25,7 @@ namespace SetPointController_v2
 
             string BrokerAddress = "172.19.2.81";
 
+
             client = new MqttClient(BrokerAddress);
 
             // a unique clientID for each time the application start
@@ -32,7 +33,8 @@ namespace SetPointController_v2
 
             client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
             client.Connect(clientId);
-            status.Text = "Status: Power Off";
+            status_convmodel.Text = "Status: Power Off";
+            status_converter.Text = "Status: Power Off";
             timer.Enabled = false;
             string Topic_power = "setpoint/power";
             string Topic_current = "setpoint/current";
@@ -55,6 +57,8 @@ namespace SetPointController_v2
             timer2.Interval = 1000;
             timer2.Tick += new EventHandler(timer2_Tick);
 
+            
+
         }
 
         private void Power_CheckedChanged(object sender, EventArgs e)
@@ -62,16 +66,17 @@ namespace SetPointController_v2
 
             if (PowerButton.Checked)
             {
-                status.Text = "Status: Power On";
+                //status_convmodel.Text = "Status: Power On";
                 timer.Enabled = true;
-                //timer.Interval = 1000; // 1 second
+                //timer.Interval = 10000; // 1 second
                 timer.Tick += new EventHandler(timer_Tick);
 
 
             }
             else
             {
-                status.Text = "Status: Power Off";
+                status_convmodel.Text = "Status: Power Off";
+                status_converter.Text = "Status: Power Off";
                 timer.Enabled = false;
                 timer1.Enabled = false;
                 string Topic_power_convmodel = "setpoint/power/convmodel";
@@ -85,6 +90,14 @@ namespace SetPointController_v2
                 client.Publish(Topic_current, Encoding.UTF8.GetBytes(Current), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
 
             }
+            if (File.Text != "")
+            {
+                string Topic_file = "setpoint/file";
+                string Topic_report = "setpoint/report";
+                string Report = Convert.ToString(1);
+                client.Publish(Topic_file, Encoding.UTF8.GetBytes(File.Text), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+                client.Publish(Topic_report, Encoding.UTF8.GetBytes(Report), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+            }
 
 
         }
@@ -93,7 +106,7 @@ namespace SetPointController_v2
         {
             if (ConverterModel.Checked)
             {
-                status.Text = "Status: Power On";
+                status_convmodel.Text = "Status: Power On";
                 string Topic_power = "setpoint/power/convmodel";
                 string Topic_current = "setpoint/current";
                 string Power = Convert.ToString(1);
@@ -105,10 +118,15 @@ namespace SetPointController_v2
                 timer1.Interval = Convert.ToInt32(time.Text) * 1000; // in seconds
                 timer1.Tick += new EventHandler(timer1_Tick);
             }
+            else
+            {
+                status_convmodel.Text = "Status: Power Off";
+                //status_converter.Text = "Status: Power Off";
+            }
 
             if (Converter.Checked)
             {
-                status.Text = "Status: Power On";
+                status_converter.Text = "Status: Power On";
                 string Topic_power = "setpoint/power/converter";
                 string Topic_current = "setpoint/current";
                 string Power = Convert.ToString(1);
@@ -121,41 +139,44 @@ namespace SetPointController_v2
                 timer1.Interval = Convert.ToInt32(time.Text) * 1000; // in seconds
                 timer1.Tick += new EventHandler(timer1_Tick);
             }
-
-
+            else
+            {
+                //status_convmodel.Text = "Status: Power Off";
+                status_converter.Text = "Status: Power Off";
+            }
 
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
 
-            status.Text = "Status: Power Off";
+            status_convmodel.Text = "Status: Power Off";
+            status_converter.Text = "Status: Power Off";
             string Topic_power_convmodel = "setpoint/power/convmodel";
             string Topic_power_converter = "setpoint/power/converter";
+            string Topic_frequency_convmodel = "convmodel/frequency";
             string Topic_current = "setpoint/current";
             string Power = Convert.ToString(0);
             string Current = Convert.ToString(0);
+            string Frequency = Convert.ToString(0);
 
             client.Publish(Topic_power_convmodel, Encoding.UTF8.GetBytes(Power), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
             client.Publish(Topic_power_converter, Encoding.UTF8.GetBytes(Power), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
             client.Publish(Topic_current, Encoding.UTF8.GetBytes(Current), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+            client.Publish(Topic_frequency_convmodel, Encoding.UTF8.GetBytes(Frequency), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
 
             timer1.Enabled = false;
-            //timer.Enabled = true;
+            //timer.Enabled = true;//
         }
- 
-        //private void Form1_Load(object sender, EventArgs e)
-        //{
-        //    timer2.Enabled = true;
-        //    timer2.Interval = 1000;
-        //    timer2.Tick += new EventHandler(timer2_Tick);
-            
-        //}
+
+
         private void timer2_Tick(object sender, EventArgs e)
         {
-            Clock.Text = DateTime.Now.ToString("hh::mm:ss");
+            Clock.Text = DateTime.Now.ToString("hh:mm:ss");
 
         }
+
+
         void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
             if (this.InvokeRequired)
@@ -172,6 +193,14 @@ namespace SetPointController_v2
                 {
 
                     this.Invoke(new Action(() => this.DisplayTemperature.Text = Encoding.UTF8.GetString(e.Message)));
+                    //string Temperature  = System.Text.Encoding.UTF8.GetString(e.Message);
+                    ////byte[] Temperature = e.Message;
+                    //if (Temperature > DisplayTemperature.Text)
+                    //{
+
+                    //}
+                    //byte[] Temperature = e.Message;
+                    //chart1.Series["Temperature"].Points.DataBindXY(Temperature, Time);
 
                 }
                 if (e.Topic == "convmodel/frequency")
@@ -188,7 +217,7 @@ namespace SetPointController_v2
                     this.Invoke(new Action(() => this.DisplayFrequency.Text = Encoding.UTF8.GetString(e.Message)));
 
                 }
-                if (e.Topic == "convmodel/currentcoil")
+                if (e.Topic == "convmodel/current")
 
                 {
 
@@ -219,11 +248,27 @@ namespace SetPointController_v2
             }
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            fillChart();
+        }
+
+        private void fillChart()
+        {
+            
+            chart1.Titles.Add("Temperature");
+           
+        }
+
         private void Quit_Click(object sender, EventArgs e)
         {
             string Topic_MQTT = "setpoint/mqtt";
             string MQTT = Convert.ToString(0);
             client.Publish(Topic_MQTT, Encoding.UTF8.GetBytes(MQTT), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+
+            string Topic_report = "setpoint/report";
+            string Report = Convert.ToString(0);
+            client.Publish(Topic_report, Encoding.UTF8.GetBytes(Report), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
 
         }
     }
