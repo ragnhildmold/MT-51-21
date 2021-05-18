@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 using uPLibrary.Networking.M2Mqtt;
 using uPLibrary.Networking.M2Mqtt.Messages;
 
@@ -23,7 +24,8 @@ namespace SetPointController_v2
             //string BrokerAddress = "";
             //Broker.Text = BrokerAddress;
 
-            string BrokerAddress = "172.19.2.81";
+            //string BrokerAddress = "192.168.10.129";
+            string BrokerAddress = "localhost";
 
 
             client = new MqttClient(BrokerAddress);
@@ -33,8 +35,8 @@ namespace SetPointController_v2
 
             client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
             client.Connect(clientId);
-            status_convmodel.Text = "Status: Power Off";
-            status_converter.Text = "Status: Power Off";
+            status_convmodel.Text = "Power Off";
+            status_converter.Text = "Power Off";
             timer.Enabled = false;
             string Topic_power = "setpoint/power";
             string Topic_current = "setpoint/current";
@@ -45,10 +47,11 @@ namespace SetPointController_v2
             client.Publish(Topic_current, Encoding.UTF8.GetBytes(Current), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
 
             client.Subscribe(new string[] { "appmodel/temp" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
+            client.Subscribe(new string[] { "appmodel/temparray" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
             client.Subscribe(new string[] { "real/temp" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
             client.Subscribe(new string[] { "convmodel/frequency" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
             client.Subscribe(new string[] { "converter/frequency" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
-            client.Subscribe(new string[] { "convmodel/currentcoil" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
+            client.Subscribe(new string[] { "convmodel/current" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
             client.Subscribe(new string[] { "converter/current" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
             client.Subscribe(new string[] { "convmodel/power" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
             client.Subscribe(new string[] { "converter/power" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
@@ -58,6 +61,8 @@ namespace SetPointController_v2
             timer2.Tick += new EventHandler(timer2_Tick);
 
             
+
+
 
         }
 
@@ -75,21 +80,27 @@ namespace SetPointController_v2
             }
             else
             {
-                status_convmodel.Text = "Status: Power Off";
-                status_converter.Text = "Status: Power Off";
+                status_convmodel.Text = "Power Off";
+                status_converter.Text = "Power Off";
+                radioButton1.BackColor = Color.Red;
+                radioButton2.BackColor = Color.Red;
                 timer.Enabled = false;
                 timer1.Enabled = false;
                 string Topic_power_convmodel = "setpoint/power/convmodel";
                 string Topic_power_converter = "setpoint/power/converter";
+                string Topic_frequency_convmodel = "convmodel/frequency";
                 string Topic_current = "setpoint/current";
                 string Power = Convert.ToString(0);
                 string Current = Convert.ToString(0);
+                string Frequency = Convert.ToString(0);
 
                 client.Publish(Topic_power_convmodel, Encoding.UTF8.GetBytes(Power), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
                 client.Publish(Topic_power_converter, Encoding.UTF8.GetBytes(Power), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
                 client.Publish(Topic_current, Encoding.UTF8.GetBytes(Current), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+                client.Publish(Topic_frequency_convmodel, Encoding.UTF8.GetBytes(Frequency), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
 
             }
+
             if (File.Text != "")
             {
                 string Topic_file = "setpoint/file";
@@ -102,11 +113,15 @@ namespace SetPointController_v2
 
         }
 
+   
+
         private void timer_Tick(object sender, EventArgs e)
         {
             if (ConverterModel.Checked)
             {
-                status_convmodel.Text = "Status: Power On";
+                status_convmodel.Text = "Power On";
+                radioButton1.BackColor = Color.Green;
+                radioButton1.ForeColor = Color.Green;
                 string Topic_power = "setpoint/power/convmodel";
                 string Topic_current = "setpoint/current";
                 string Power = Convert.ToString(1);
@@ -120,13 +135,16 @@ namespace SetPointController_v2
             }
             else
             {
-                status_convmodel.Text = "Status: Power Off";
-                //status_converter.Text = "Status: Power Off";
+                status_convmodel.Text = "Power Off";
+                radioButton1.BackColor = Color.Red;
+                radioButton1.ForeColor = Color.Red;
             }
 
             if (Converter.Checked)
             {
-                status_converter.Text = "Status: Power On";
+                status_converter.Text = "Power On";
+                radioButton2.BackColor = Color.Green;
+                radioButton2.ForeColor = Color.Green;
                 string Topic_power = "setpoint/power/converter";
                 string Topic_current = "setpoint/current";
                 string Power = Convert.ToString(1);
@@ -141,8 +159,9 @@ namespace SetPointController_v2
             }
             else
             {
-                //status_convmodel.Text = "Status: Power Off";
-                status_converter.Text = "Status: Power Off";
+                status_converter.Text = "Power Off";
+                radioButton2.BackColor = Color.Red;
+                radioButton2.ForeColor = Color.Red;
             }
 
         }
@@ -150,8 +169,12 @@ namespace SetPointController_v2
         private void timer1_Tick(object sender, EventArgs e)
         {
 
-            status_convmodel.Text = "Status: Power Off";
-            status_converter.Text = "Status: Power Off";
+            status_convmodel.Text = "Power Off";
+            status_converter.Text = "Power Off";
+            radioButton1.BackColor = Color.Red;
+            radioButton1.ForeColor = Color.Red;
+            radioButton2.BackColor = Color.Red;
+            radioButton2.ForeColor = Color.Red;
             string Topic_power_convmodel = "setpoint/power/convmodel";
             string Topic_power_converter = "setpoint/power/converter";
             string Topic_frequency_convmodel = "convmodel/frequency";
@@ -177,32 +200,24 @@ namespace SetPointController_v2
         }
 
 
-        void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
+        public void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
             if (this.InvokeRequired)
             {
                 if (e.Topic == "appmodel/temp")
-
                 {
 
                     this.Invoke(new Action(() => this.DisplayTemperatureModel.Text = Encoding.UTF8.GetString(e.Message)));
 
                 }
+               
                 if (e.Topic == "real/temp")
-
                 {
 
                     this.Invoke(new Action(() => this.DisplayTemperature.Text = Encoding.UTF8.GetString(e.Message)));
-                    //string Temperature  = System.Text.Encoding.UTF8.GetString(e.Message);
-                    ////byte[] Temperature = e.Message;
-                    //if (Temperature > DisplayTemperature.Text)
-                    //{
-
-                    //}
-                    //byte[] Temperature = e.Message;
-                    //chart1.Series["Temperature"].Points.DataBindXY(Temperature, Time);
 
                 }
+
                 if (e.Topic == "convmodel/frequency")
 
                 {
@@ -245,20 +260,11 @@ namespace SetPointController_v2
                     this.Invoke(new Action(() => this.DisplayPower.Text = Encoding.UTF8.GetString(e.Message)));
 
                 }
+                
             }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            fillChart();
-        }
 
-        private void fillChart()
-        {
-            
-            chart1.Titles.Add("Temperature");
-           
-        }
 
         private void Quit_Click(object sender, EventArgs e)
         {
@@ -270,6 +276,7 @@ namespace SetPointController_v2
             string Report = Convert.ToString(0);
             client.Publish(Topic_report, Encoding.UTF8.GetBytes(Report), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
 
+            System.Windows.Forms.Application.Exit();
         }
     }
 }
